@@ -38,8 +38,10 @@ module.exports = {
         const job = jobs.find(job => Number(job.id) === Number(jobId) )
 
         if (!job){
-            return res.send('Job not found!')
+            return res.send('Job not found! - show/jobcobtroller-')
+          
         }
+
 
 
         job.budget = JobUtils.calculateBudget(job, profile["value-hour"])
@@ -53,13 +55,12 @@ module.exports = {
         const jobId = req.params.id
         
         const jobs = Job.get();
-        const profile = Profile.get();
 
         //find = procurar o numero 
         const job = jobs.find(job => Number(job.id) === Number(jobId) )
 
         if (!job){
-            return res.send('Job not found!')
+            return res.send('Job not found! -update/jobcobtroller -')
         }
 
         const updateJob = {
@@ -84,8 +85,6 @@ module.exports = {
     
     delete ( req, res){
         const jobId = req.params.id
-        const jobs = Job.get();
-
         
         Job.delete(jobId)
       

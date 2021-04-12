@@ -14,6 +14,8 @@ module.exports = {
             done:  0,
             total: jobs.length
         }
+        //total de horas de por dia de cada Job em andamento
+        let jobTotalHours = 0
 
         const updatedJobs = jobs.map((job) => {
             //ajustes no job
@@ -22,6 +24,13 @@ module.exports = {
 
                 //somando a quantidade de status
                 statusCount[status] +=1;
+                //total de horas de por dia de cada Job em andamento
+                //if(status == 'progress'){
+                //jobTotalHours += Number(job['daily-hours'])
+               // }
+                //↑ normal em ↓ ternário
+                jobTotalHours = status == 'progress' ? jobTotalHours + Number(job['daily-hours']) : jobTotalHours  
+
 
                 return {
                 ...job,
@@ -32,8 +41,9 @@ module.exports = {
     })
 
 
+    const freeHours = profile["hours-per-day"] - jobTotalHours;
     
-    return res.render("index", { jobs: updatedJobs, profile: profile, statusCount: statusCount })
+    return res.render("index", { jobs: updatedJobs, profile: profile, statusCount: statusCount, freeHours: freeHours })
 
     }
     }

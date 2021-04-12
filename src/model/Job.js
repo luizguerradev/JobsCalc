@@ -1,3 +1,5 @@
+
+
 let data = [
     {
         id: 1,
@@ -24,10 +26,6 @@ module.exports = {
     },
     delete(id){
         data = data.filter(job => Number(job.id) !== Number(id))
-
-          //atualiza o id dos jobs caso o id do job deletado seja menor
-          data.forEach(job => {
-            if (id < job.id) id = id - 1
-        })
+        
     }
 }
