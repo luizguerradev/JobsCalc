@@ -1,17 +1,26 @@
+const Job = require('../model/Job')
+const JobUtils = require('../utils/JobUtils')
+const Profile = require('../model/Profile')
+
 module.exports = {
 
     index(req, res){
-    const updatedJobs = Job.data.map((job) => {
-      //ajustes no job
-        const remaining = Job.services.remainingDays(job)
-        const status = remaining <= 0 ? 'done' : 'progress'
-  
-        return {
-          ...job,
-          remaining,
-          status,
-          budget: Job.services.calculateBudget(job, Profile.data["value-hour"])
-        }
+    
+        const jobs = Job.get();
+        const profile = Profile.get();
+
+    
+            const updatedJobs = jobs.map((job) => {
+            //ajustes no job
+                const remaining = JobUtils.remainingDays(job)
+                const status = remaining <= 0 ? 'done' : 'progress'
+        
+                return {
+                ...job,
+                remaining,
+                status,
+                budget: JobUtils.calculateBudget(job, profile["value-hour"])
+                }
     })
 
     
@@ -29,39 +38,50 @@ module.exports = {
             //const job = req.body
             //job.created_at = Date.now() //atribuindo uma nova data
             // busca o ultimo id e pergunta.. se já tem id faz o -1 ou se não tiver posição é 1
-            const lastId = Job.data[Job.data.length - 1]?.id || 0;
+            const jobs = Job.get();
 
-            Job.data.push({
-                id: lastId + 1,
-                name: req.body.name, 
-                "daily-hours": req.body["daily-hours"], 
-                "total-hours": req.body["total-hours"],
-                created_at: Date.now() //atribuindo data de hoje
-            })
+                const lastId = jobs[jobs.length - 1]?.id || 0;
 
-            return res.redirect('/')
+                jobs.push({
+                    id: lastId + 1,
+                    name: req.body.name, 
+                    "daily-hours": req.body["daily-hours"], 
+                    "total-hours": req.body["total-hours"],
+                    created_at: Date.now() //atribuindo data de hoje
+                })
+
+                return res.redirect('/')
     },
 
     show(req, res){
         const jobId = req.params.id
+
+        const jobs = Job.get();
+        const profile = Profile.get();
+
         //find = procurar o numero 
-        const job = Job.data.find(job => Number(job.id) === Number(jobId) )
+        const job = jobs.find(job => Number(job.id) === Number(jobId) )
 
         if (!job){
             return res.send('Job not found!')
         }
 
 
-        job.budget = Job.services.calculateBudget(job, Profile.data["value-hour"])
+        job.budget = JobUtils.calculateBudget(job, profile["value-hour"])
 
 
         return res.render("job-edit", { job })
     },
 
     update (req, res){
+        
         const jobId = req.params.id
+        
+        const jobs = Job.get();
+        const profile = Profile.get();
+
         //find = procurar o numero 
-        const job = Job.data.find(job => Number(job.id) === Number(jobId) )
+        const job = jobs.find(job => Number(job.id) === Number(jobId) )
 
         if (!job){
             return res.send('Job not found!')
@@ -74,7 +94,7 @@ module.exports = {
             "daily-hours": req.body["daily-hours"],
         }
 
-        Job.data = Job.data.map(job => {
+        const newJobs = jobs.map(job => {
             
             if(Number(job.id) === Number(jobId)){
                 job = updateJob
@@ -82,19 +102,18 @@ module.exports = {
             return job
         })
 
+        Job.update(newJobs)
+
         res.redirect('/job/' + jobId)
     },
     
     delete ( req, res){
-        const deleteJobId = req.params.id
-        
-        // se o id do job for igual ao passado, não retorna ele
-        Job.data = Job.data.filter(job => Number(job.id) !== Number(deleteJobId))
+        const jobId = req.params.id
+        const jobs = Job.get();
 
-        //atualiza o id dos jobs caso o id do job deletado seja menor
-        Job.data.forEach(job => {
-            if (deleteJobId < job.id) job.id = job.id - 1
-        })
+        
+        Job.delete(jobId)
+      
         
         // redirect to index page
         return res.redirect('/')
