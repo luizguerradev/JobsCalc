@@ -1,9 +1,16 @@
-const Database = require('config')
+const Database = require('./config')
 
-Database()
+const initDb = {
+   async init() {
+
+    
+// async await
 
 
-Database.exec( `CREATE TABLE profile (
+const db = await Database()
+
+
+await db.exec( `CREATE TABLE profile (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT, 
     avatar TEXT,
@@ -11,41 +18,41 @@ Database.exec( `CREATE TABLE profile (
     days_per_week INT,
     hours_per_day INT,
     vacation_per_year INT,
-    value_hour INT,
-    
+    value_hour INT
  )`
 )
 
-Database.exec(`CREATE TABLE jobs(
+await db.exec(`CREATE TABLE jobs(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT,
     daily_hours INT,
     total_hours INT,
     created_at DATETIME
-)`)
+    )`
+)
 
-Database.run(`INSERT INTO profile(
+await db.run(`INSERT INTO profile(
         name,
         avatar,
         monthly_budget,
         days_per_week,
         hours_per_day,
-        vacation_per_year,
+        vacation_per_year
     ) VALUES (
-        "Luiz Guerra"
-        "https://github.com/luizguerradev.png"
+        "Luiz Guerra",
+        "https://github.com/luizguerradev.png",
         3000,
         5,
         5,
-        4,
+        4
     );`
 )
 
-Database.run(`INSERT INTO jobs(
+await db.run(`INSERT INTO jobs(
         name,
         daily_hours,
         total_hours,
-        created_at,
+        created_at
     ) VALUES (
         "Pizzaria Guloso",
         2,
@@ -54,11 +61,11 @@ Database.run(`INSERT INTO jobs(
     );`
 )
 
-Database.run(`INSERT INTO jobs(
+await db.run(`INSERT INTO jobs(
         name,
         daily_hours,
         total_hours,
-        created_at,
+        created_at
     ) VALUES (
         "Pizzaria Guloso",
         2,
@@ -67,57 +74,9 @@ Database.run(`INSERT INTO jobs(
     );`
 )
 
-Database.close()
+await db.close()
 
+    }
+}
 
-
-/*    
-CREATE TABLE nomedatabela (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    campo TEXT, 
-    campo TEXT,
-    campo INT, 
-    campo INT,
-    campo INT,
-    
-    )
-
-INSERT INTO profile(
-    name,
-    avatar,
-    monthly_budget,
-    days_per_week,
-    hours_per_day,
-    vacation_per_year,
-) VALUES (
-    "Luiz Guerra"
-    "https://github.com/luizguerradev.png"
-    3000,
-    5,
-    5,
-    4,
-
-);
-INSERT INTO jobs(
-    name,
-    daily_hours,
-    total_hours,
-    created_at,
-) VALUES (
-    "Pizzaria Guloso",
-    2,
-    1,
-    1617514376018
-);
-INSERT INTO jobs(
-    name,
-    daily_hours,
-    total_hours,
-    created_at,
-) VALUES (
-    "Pizzaria Guloso",
-    2,
-    1,
-    1617514376018
-);
-*/
+initDb.init()
