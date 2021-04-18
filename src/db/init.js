@@ -37,14 +37,16 @@ await db.run(`INSERT INTO profile(
         monthly_budget,
         days_per_week,
         hours_per_day,
-        vacation_per_year
+        vacation_per_year,
+        value_hour
     ) VALUES (
         "Luiz Guerra",
         "https://github.com/luizguerradev.png",
         3000,
         5,
         5,
-        4
+        4,
+        75
     );`
 )
 
