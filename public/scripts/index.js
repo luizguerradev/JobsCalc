@@ -3,7 +3,7 @@ import Modal from './modal.js';
 const modal = Modal({ animateClasses: ['animate-pop', 'back'] })
 
 const cards = document.querySelectorAll('.cards .card')
-const deleteForm = document.querySelector('#delete')
+const deleteForm = document.querySelector('#delete-job')
 
 
 for (let card of cards) {

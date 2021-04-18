@@ -13,14 +13,14 @@ module.exports = {
             //const job = req.body
             //job.created_at = Date.now() //atribuindo uma nova data
                   
-                await Job.create({
-                    name: req.body.name, 
-                    "daily-hours": req.body["daily-hours"], 
-                    "total-hours": req.body["total-hours"],
-                    created_at: Date.now() //atribuindo data de hoje
-                });
+        await Job.create({
+            name: req.body.name, 
+            "daily-hours": req.body["daily-hours"], 
+            "total-hours": req.body["total-hours"],
+            created_at: Date.now() //atribuindo data de hoje
+            });
 
-                return res.redirect('/')
+            return res.redirect('/')
     },
 
     async show(req, res){
@@ -32,7 +32,7 @@ module.exports = {
         const job = jobs.find(job => Number(job.id) === Number(jobId) )
 
         if (!job){
-            return res.send('Job not found! - show/jobcobtroller-')
+            return res.send('Job not found! -async show-')
           
         }
         const profile = await Profile.get()
@@ -48,39 +48,21 @@ module.exports = {
         
         const jobId = req.params.id
         
-        const jobs = await Job.get();
-
-        //find = procurar o numero 
-        const job = jobs.find(job => Number(job.id) === Number(jobId) )
-
-        if (!job){
-            return res.send('Job not found! -update/jobcobtroller -')
-        }
-
-        const updateJob = {
-            ...job,
+        const updatedJob = {
             name: req.body.name,
             "total-hours": req.body["total-hours"],
             "daily-hours": req.body["daily-hours"],
         }
 
-        const newJobs = jobs.map(job => {
-            
-            if(Number(job.id) === Number(jobId)){
-                job = updateJob
-            }
-            return job
-        })
-
-        Job.update(newJobs)
+        await Job.update(updatedJob, jobId)
 
         res.redirect('/job/' + jobId)
     },
     
-    delete ( req, res){
+     async delete ( req, res){
         const jobId = req.params.id
         
-        Job.delete(jobId)
+        await Job.delete(jobId)
       
         
         // redirect to index page
