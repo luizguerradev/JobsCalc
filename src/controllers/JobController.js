@@ -8,17 +8,12 @@ module.exports = {
         return res.render("job")
     },
 
-    save(req, res,){
+    async save(req, res,){
             //req.body =  { name: 'null', 'daily-hours': '3.5', 'total-hours': '4' }
             //const job = req.body
             //job.created_at = Date.now() //atribuindo uma nova data
-            // busca o ultimo id e pergunta.. se já tem id faz o -1 ou se não tiver posição é 1
-            const jobs = Job.get();
-
-                const lastId = jobs[jobs.length - 1]?.id || 0;
-
-                Job.create({
-                    id: lastId + 1,
+                  
+                await Job.create({
                     name: req.body.name, 
                     "daily-hours": req.body["daily-hours"], 
                     "total-hours": req.body["total-hours"],
@@ -28,11 +23,10 @@ module.exports = {
                 return res.redirect('/')
     },
 
-    show(req, res){
+    async show(req, res){
         const jobId = req.params.id
 
-        const jobs = Job.get();
-        const profile = Profile.get();
+        const jobs = await Job.get();
 
         //find = procurar o numero 
         const job = jobs.find(job => Number(job.id) === Number(jobId) )
@@ -41,7 +35,7 @@ module.exports = {
             return res.send('Job not found! - show/jobcobtroller-')
           
         }
-
+        const profile = await Profile.get()
 
 
         job.budget = JobUtils.calculateBudget(job, profile["value-hour"])
@@ -50,11 +44,11 @@ module.exports = {
         return res.render("job-edit", { job })
     },
 
-    update (req, res){
+    async update (req, res){
         
         const jobId = req.params.id
         
-        const jobs = Job.get();
+        const jobs = await Job.get();
 
         //find = procurar o numero 
         const job = jobs.find(job => Number(job.id) === Number(jobId) )

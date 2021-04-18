@@ -6,7 +6,7 @@ module.exports = {
     //async por causa do await no profile.get
     async index(req, res){
         
-        const jobs = Job.get();
+        const jobs = await Job.get();
         //await ligado ao async do Profile model
         const profile = await Profile.get();
 

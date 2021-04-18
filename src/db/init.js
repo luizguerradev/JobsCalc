@@ -69,10 +69,10 @@ await db.run(`INSERT INTO jobs(
         total_hours,
         created_at
     ) VALUES (
-        "Pizzaria Guloso",
-        2,
-        1,
-        1617514376018
+        "OneTwo Project",
+        3,
+        47,
+        19185478962314
     );`
 )
 
